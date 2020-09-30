@@ -1,0 +1,254 @@
+from selenium import webdriver 
+from selenium.webdriver.common.keys import Keys
+from bs4 import BeautifulSoup
+import requests
+import csv
+import pandas as pd
+
+driver = webdriver.Chrome(executable_path='./chromedriver')
+url = 'https://www.medicamentosplm.com/Home'
+driver.get (url)
+
+################################## MEDICAMENTOS ####################################
+
+driver.find_element_by_class_name('border-bottom-uno').click()
+driver.find_element_by_xpath('/html/body/div[1]/div/nav/ul/li[4]/a').click()
+
+#TABLA MEDICAMENTOS 1
+soup = BeautifulSoup( driver.page_source, 'html.parser')
+table = (soup.find (id='prescriptionGrid'))
+#print (table)
+
+meds = (table.find_all(id='editable'))
+med_name = [med.find(class_='tab-6').text.replace('\n', ' ').strip().replace('\t', '') for med in meds]
+med_sus = [med.find(id='prescription-substance-1').text.replace('\n', ' ').strip().replace('\t', '') for med in meds]
+med_form = [med.find(id='prescription-pharmaForm-1').text.replace('\n', ' ').strip().replace('\t', '') for med in meds]
+med_lab = [med.find(id='prescription-division-1').text.replace('\n', ' ').strip().replace('\t', '') for med in meds]
+med_pres = [med.find(id='prescription-presentation-1').text.replace('\n', ' ').strip().replace('\t', '') for med in meds]
+med_prec = [med.find (target= '_blank')for med in meds]
+#print (name)
+
+med_table = pd.DataFrame (
+    {'Medicamento': med_name, 
+    'Sustancia': med_sus, 
+    'Forma Farmaceútica': med_form, 
+    'Laboratorio': med_lab, 
+    'Presentación': med_pres,
+    'Precio':med_prec})
+print (med_table)
+
+#TABLA MEDICAMENTOS 2
+driver.find_element_by_xpath('/html/body/section/div[1]/div/nav/ul/li[3]/a').click()
+soup2 = BeautifulSoup( driver.page_source, 'html.parser')
+table2 = (soup2.find (id='prescriptionGrid'))
+
+unos = (table2.find_all(id='editable'))
+medi_dos = [uno.find(class_='tab-6').text.replace('\n', ' ').strip().replace('\t', '') for uno in unos]
+medi_tres = [uno.find(id='prescription-substance-1').text.replace('\n', ' ').strip().replace('\t', '') for uno in unos]
+medi_cuatro = [uno.find(id='prescription-pharmaForm-1').text.replace('\n', ' ').strip().replace('\t', '') for uno in unos]
+medi_cinco = [uno.find(id='prescription-division-1').text.replace('\n', ' ').strip().replace('\t', '') for uno in unos]
+medi_seis = [uno.find(id='prescription-presentation-1').text.replace('\n', ' ').strip().replace('\t', '') for uno in unos]
+medi_siete = [uno.find (target= '_blank')for uno in unos]
+
+med_table2 = pd.DataFrame (
+    {'Medicamento': medi_dos, 
+    'Sustancia': medi_tres, 
+    'Forma Farmaceútica': medi_cuatro, 
+    'Laboratorio': medi_cinco, 
+    'Presentación': medi_seis,
+    'Precio':medi_siete})
+print (med_table2)
+
+#TABLA MEDICAMENTOS 3
+driver.find_element_by_xpath('/html/body/section/div[1]/div/nav/ul/li[4]/a').click()
+soup3 = BeautifulSoup( driver.page_source, 'html.parser')
+table3 = (soup3.find (id='prescriptionGrid'))
+
+ones = (table3.find_all(id='editable'))
+medic_two = [one.find(class_='tab-6').text.replace('\n', ' ').strip().replace('\t', '') for one in ones]
+medic_three = [one.find(id='prescription-substance-1').text.replace('\n', ' ').strip().replace('\t', '') for one in ones]
+medic_four = [one.find(id='prescription-pharmaForm-1').text.replace('\n', ' ').strip().replace('\t', '') for one in ones]
+medic_five = [one.find(id='prescription-division-1').text.replace('\n', ' ').strip().replace('\t', '') for one in ones]
+medic_six = [one.find(id='prescription-presentation-1').text.replace('\n', ' ').strip().replace('\t', '') for one in ones]
+medic_seven = [one.find (target= '_blank')for one in ones]
+
+med_table3 = pd.DataFrame (
+    {'Medicamento': medic_two, 
+    'Sustancia': medic_three, 
+    'Forma Farmaceútica': medic_four, 
+    'Laboratorio': medic_five, 
+    'Presentación': medic_six,
+    'Precio':medic_seven})
+print (med_table3)
+
+#TABLA MEDICAMENTOS 4
+driver.find_element_by_xpath('/html/body/section/div[1]/div/nav/ul/li[5]/a').click()
+soup4 = BeautifulSoup( driver.page_source, 'html.parser')
+table4 = (soup4.find (id='prescriptionGrid'))
+
+uns = (table4.find_all(id='editable'))
+medica_deux = [un.find(class_='tab-6').text.replace('\n', ' ').strip().replace('\t', '') for un in uns]
+medica_trois = [un.find(id='prescription-substance-1').text.replace('\n', ' ').strip().replace('\t', '') for un in uns]
+medica_quatre = [un.find(id='prescription-pharmaForm-1').text.replace('\n', ' ').strip().replace('\t', '') for un in uns]
+medica_cinq = [un.find(id='prescription-division-1').text.replace('\n', ' ').strip().replace('\t', '') for un in uns]
+medica_sept = [un.find(id='prescription-presentation-1').text.replace('\n', ' ').strip().replace('\t', '') for un in uns]
+medica_huit = [un.find (target= '_blank')for un in uns]
+
+med_table4 = pd.DataFrame (
+    {'Medicamento': medica_deux, 
+    'Sustancia': medica_trois, 
+    'Forma Farmaceútica': medica_quatre, 
+    'Laboratorio': medica_cinq, 
+    'Presentación': medica_sept,
+    'Precio':medica_huit})
+print (med_table4)
+
+med_final_table = pd.concat ([med_table, med_table2, med_table3, med_table4])
+#print (med_final_table)
+med_final_table.to_csv('Medicamentos.csv')
+
+################################## SUSTANCIAS ####################################
+
+driver.find_element_by_xpath('/html/body/header/div[2]/a[1]/img').click()
+driver.find_element_by_class_name('border-bottom-dos').click()
+driver.find_element_by_xpath('/html/body/div[1]/div/nav/ul/li[4]/a').click()
+
+#TABLA SUSTANCIAS 1
+soup = BeautifulSoup( driver.page_source, 'html.parser')
+table = (soup.find (id='prescriptionGrid'))
+#print (table)
+
+names = (table.find_all(id='editable'))
+name = [name.find (class_='tab-1').text.replace('\n', ' ').strip().replace('\t', '') for name in names]
+#print (name)
+
+sus_table = pd.DataFrame (
+    {'Nombre': name})
+print (sus_table)
+
+#TABLA SUSTANCIAS 2
+driver.find_element_by_xpath('/html/body/section/div[1]/div/nav/ul/li[3]/a').click()
+soup2 = BeautifulSoup( driver.page_source, 'html.parser')
+table2 = (soup2.find (id='prescriptionGrid'))
+
+others = (table2.find_all(id='editable'))
+other = [other.find (class_='tab-1').text.replace('\n', ' ').strip().replace('\t', '') for other in others]
+
+sus_table2 = pd.DataFrame (
+    {'Nombre': other})
+print (sus_table2)
+
+#TABLA SUSTANCIAS 3
+driver.find_element_by_xpath('/html/body/section/div[1]/div/nav/ul/li[4]/a').click()
+soup3 = BeautifulSoup( driver.page_source, 'html.parser')
+table3 = (soup3.find (id='prescriptionGrid'))
+
+anothers = (table3.find_all(id='editable'))
+another = [another.find (class_='tab-1').text.replace('\n', ' ').strip().replace('\t', '') for another in anothers]
+
+sus_table3 = pd.DataFrame (
+    {'Nombre': another})
+print (sus_table3)
+
+#TABLA SUSTANCIAS 4
+driver.find_element_by_xpath('/html/body/section/div[1]/div/nav/ul/li[5]/a').click()
+soup4 = BeautifulSoup( driver.page_source, 'html.parser')
+table4 = (soup4.find (id='prescriptionGrid'))
+
+otros = (table4.find_all(id='editable'))
+otro = [otro.find (class_='tab-1').text.replace('\n', ' ').strip().replace('\t', '') for otro in otros]
+
+sus_table4 = pd.DataFrame (
+    {'Nombre': otro})
+print (sus_table4)
+
+sus_final_table = pd.concat ([sus_table, sus_table2, sus_table3, sus_table4])
+#print (sus_final_table)
+sus_final_table.to_csv('Sustancias.csv')
+
+################################ LABORATORIOS ####################################
+
+driver.find_element_by_xpath('/html/body/header/div[2]/a[1]/img').click()
+driver.find_element_by_class_name('border-bottom-tres').click()
+driver.find_element_by_xpath('/html/body/div[1]/div/nav/ul/li[4]/a').click()
+
+#TABLA LABORATORIOS 1
+soup = BeautifulSoup( driver.page_source, 'html.parser')
+table = (soup.find (id='prescriptionGrid'))
+#print (table)
+
+labs = (table.find_all(id='editable'))
+lab = [lab.find (class_='tab-1').text.replace('\n', ' ').strip().replace('\t', '') for lab in labs]
+#print (lab)
+
+lab_table = pd.DataFrame (
+    {'Nombre': lab})
+print (lab_table)
+
+lab_table.to_csv ('Laboratorios.csv')
+
+##################################### CIE-10 ######################################
+
+driver.find_element_by_xpath('/html/body/header/div[2]/a[1]/img').click()
+driver.find_element_by_class_name('border-bottom-cuatro').click()
+driver.find_element_by_xpath('/html/body/div[1]/div/nav/ul/li[4]/a').click()
+
+#TABLA CIE 1
+soup = BeautifulSoup( driver.page_source, 'html.parser')
+table = (soup.find (id='prescriptionGrid'))
+#print (table)
+
+cies = (table.find_all(id='editable'))
+cie_clave = [cie.find (class_='tab-9').text.replace('\n', ' ').strip().replace('\t', '') for cie in cies]
+cie_name = [cie.find (class_='tab-6').text.replace('\n', ' ').strip().replace('\t', '') for cie in cies]
+
+cie_table1 = pd.DataFrame (
+    {'Clave': cie_clave,
+    'Nombre': cie_name})
+print (cie_table1)
+
+#TABLA CIE 2
+driver.find_element_by_xpath('/html/body/section/div[1]/div/nav/ul/li[3]/a').click()
+soup2 = BeautifulSoup( driver.page_source, 'html.parser')
+table2 = (soup2.find (id='prescriptionGrid'))
+
+tens = (table2.find_all(id='editable'))
+ten_clave = [ten.find (class_='tab-9').text.replace('\n', ' ').strip().replace('\t', '') for ten in tens]
+ten_name = [ten.find (class_='tab-6').text.replace('\n', ' ').strip().replace('\t', '') for ten in tens]
+
+cie_table2 = pd.DataFrame (
+    {'Clave': ten_clave,
+    'Nombre': ten_name})
+print (cie_table2)
+
+#TABLA CIE 3 
+driver.find_element_by_xpath('/html/body/section/div[1]/div/nav/ul/li[4]/a').click()
+soup3 = BeautifulSoup( driver.page_source, 'html.parser')
+table3 = (soup3.find (id='prescriptionGrid'))
+
+oks = (table3.find_all(id='editable'))
+ok_clave = [ok.find (class_='tab-9').text.replace('\n', ' ').strip().replace('\t', '') for ok in oks]
+ok_name = [ok.find (class_='tab-6').text.replace('\n', ' ').strip().replace('\t', '') for ok in oks]
+
+cie_table3 = pd.DataFrame (
+    {'Clave': ok_clave,
+    'Nombre': ok_name})
+print (cie_table3)
+
+#TABLA CIE 4
+driver.find_element_by_xpath('/html/body/section/div[1]/div/nav/ul/li[5]/a').click()
+soup4 = BeautifulSoup( driver.page_source, 'html.parser')
+table4 = (soup4.find (id='prescriptionGrid'))
+
+okays = (table4.find_all(id='editable'))
+okay_clave = [okay.find (class_='tab-9').text.replace('\n', ' ').strip().replace('\t', '') for okay in okays]
+okay_name = [okay.find (class_='tab-6').text.replace('\n', ' ').strip().replace('\t', '') for okay in okays]
+
+cie_table4 = pd.DataFrame (
+    {'Clave': okay_clave,
+    'Nombre': okay_name})
+print (cie_table4)
+
+cie_final_table = pd.concat ([cie_table1, cie_table2, cie_table3, cie_table4])
+#print (cie_final_table)
+cie_final_table.to_csv('CIE10.csv')
